@@ -1,0 +1,2 @@
+/usr/bin/ar qc libBaseSerial.a  CMakeFiles/BaseSerial.dir/Src/BaseSerial.cpp.o
+/usr/bin/ranlib libBaseSerial.a

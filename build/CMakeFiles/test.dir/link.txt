@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/test.dir/Src/Test.cpp.o  -o test  libBaseSerial.a libCsMessage.a 

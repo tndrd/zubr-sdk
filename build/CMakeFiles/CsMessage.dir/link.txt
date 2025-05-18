@@ -1,0 +1,2 @@
+/usr/bin/ar qc libCsMessage.a  CMakeFiles/CsMessage.dir/Src/CsMessage.cpp.o
+/usr/bin/ranlib libCsMessage.a

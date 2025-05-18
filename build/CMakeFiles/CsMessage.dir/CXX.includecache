@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../Inc/CsMessage.h
+stdint.h
+-
+
+/home/tndrd/Projects/zubr-hardware-interface/Src/CsMessage.cpp
+CsMessage.h
+/home/tndrd/Projects/zubr-hardware-interface/Src/CsMessage.h
+
