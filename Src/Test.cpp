@@ -19,36 +19,32 @@ int main(int argc, char** argv) {
   conf.Port = "/dev/ttyACM0";
 
   auto io = Zubr::IO(conf);
-  
-  /*
+  Zubr::RPC::Call<ZP::GetZubrParam>(io, {0});
+  Zubr::RPC::Call<ZP::GetZubrParam>(io, {0});
+  Zubr::RPC::Call<ZP::GetZubrParam>(io, {0});
+
   Zubr::CsMessageOut msgOut;
-  msgOut.hostBeginQuery(RB_CB_UNIT_PARAM);
-  msgOut.addInt8(0);
-  msgOut.addInt8(Zubr::RPC::Messages::UnitParamCtl::Read);
-  msgOut.addInt8(1);
-  msgOut.addInt16(0);
-  msgOut.addInt32(0);
-  msgOut.hostEnd();
+  msgOut.hostBeginQuery(RB_CB_RL_STATE_GET);
+  
+  //msgOut.addInt8(14);
+  
+  //for (int i = 0; i < 25; ++i)
+  //  msgOut.addInt16(32767);
+  
+  //msgOut.hostEnd();
   io.Send(msgOut);
-  */
+  
   
   try {
-    //auto msgIn = io.Recv(nRecv);
+    auto msgIn = io.Recv(nRecv);
     
-    Zubr::RPC::Messages::UnitParam param;
-    param.Sio() = 0;
-    param.Oper() = param.Read;
-    param.Id() = 0;
-    param.Index() = 0;
-    param.Value() = 0;
-
-    auto resp = Zubr::RPC::Call<ZP::UnitParam>(io, param);
+    //auto resp = Zubr::RPC::Call<ZP::GetZubrParam>(io, {0});
     
-    std::cout << "Sio: " << +resp.Sio() << std::endl;
-    std::cout << "Oper: " << +resp.Oper() << std::endl;
-    std::cout << "Id: " << +resp.Id() << std::endl;
-    std::cout << "Index: " << +resp.Index() << std::endl;
-    std::cout << "Value: " << +resp.Value() << std::endl;
+    //std::cout << "Sio: " << +resp.Sio() << std::endl;
+    //std::cout << "Oper: " << +resp.Oper() << std::endl;
+    //std::cout << "Id: " << +resp.Id() << std::endl;
+    //std::cout << "Index: " << +resp.Index() << std::endl;
+    //std::cout << "Value: " << +resp.Value() << std::endl;
 
   } catch (std::exception &e) {
     std::cout << "Got exception: " << e.what() << std::endl;

@@ -4,6 +4,7 @@
 #include "CsMessage.h"
 #include <array>
 #include <utility>
+#include <iostream>
 
 namespace Zubr {
 class IO {
@@ -29,9 +30,11 @@ public:
     size_t i = 0;
 
     for (; i < len / MaxPacketSize; i += MaxPacketSize) {
+      std::cout << "Sent " << 63 << std::endl;
       Serial.Send(buf + i, MaxPacketSize);
     }
 
+    std::cout << "Sent " << len % MaxPacketSize << std::endl;
     Serial.Send(buf + i, len % MaxPacketSize);
   }
 
