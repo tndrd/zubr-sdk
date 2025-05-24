@@ -15,6 +15,7 @@ struct RPC {
       std::tuple<T> Data;
       GETTER(Value, 0);
       SFW(T value) : Data{value} {}
+      SFW() = default;
     };
 
     struct Empty {
@@ -113,25 +114,28 @@ struct RPC {
 #define PROCEDURE(name, cmd, rspCmd, rspSz, req, rsp)                                  \
   using name = Procedure<cmd, rspCmd, rspSz, Messages::req, Messages::rsp>;
 
-    PROCEDURE(GetZubrParam, RB_CB_PARAM_VALUE_GET, RB_CB_PARAM_VALUE, 9, Int16, Param);
-    
     // Does not seem to work
-    // PROCEDURE(SetZubrParam, RB_CB_PARAM_VALUE, 9, Param, Param);
+    // Does not actually write to param
+    // Needs testing
+    PROCEDURE(SetZubrParam, RB_CB_PARAM_VALUE, RB_CB_PARAM_VALUE, 9, Param, Param);
+    PROCEDURE(GetZubrParam, RB_CB_PARAM_VALUE_GET, RB_CB_PARAM_VALUE, 9, Int16, Param);
+
+    PROCEDURE(UnitParam, RB_CB_UNIT_PARAM, RB_CB_UNIT_PARAM, 13, UnitParam, UnitParam);
+
+    PROCEDURE(SetPosition, RB_CB_RL_CONTROL, RB_CB_RL_STATE, 61, State, State);
+    PROCEDURE(GetPosition, RB_CB_RL_STATE_GET, RB_CB_RL_STATE, 61, Empty, State);
+    PROCEDURE(GetVelocity, RB_CB_RL_VELO_GET, RB_CB_RL_STATE_VELO, 61, Empty, State);
+
+    PROCEDURE(GetIMU, RB_CB_RL_IMU_GET, RB_CB_RL_IMU, 25, Empty, Imu);
     
     PROCEDURE(StartSlot, RB_CB_SLOT, RB_CB_SLOT_OK, 2, Int8, Empty);
-    
-    PROCEDURE(UnitParam, RB_CB_UNIT_PARAM, RB_CB_UNIT_PARAM, 13, UnitParam, UnitParam);
-    //PROCEDURE(SetPosition, RB_CB_RL_CONTROL, 256, State, State);
-    //PROCEDURE(GetPosition, RB_CB_RL_STATE_GET, 256, Empty, State);
-    //PROCEDURE(GetVelocity, RB_CB_RL_VELO_GET, 256, Empty, State);
-    //PROCEDURE(GetIMU, RB_CB_RL_IMU, 256, Empty, Imu);
 
 #undef PROCEDURE
   };
 
   template <typename Proc>
   static typename Proc::Responce Call(IO &zubr,
-                                      const typename Proc::Request &request) {
+                                      const typename Proc::Request &request = {}) {
     CsMessageOut csOut = Messages::ToCsMessageOut(request, Proc::Cmd);
     zubr.Send(csOut);
     CsMessageIn csIn = zubr.Recv(Proc::RspSize);
