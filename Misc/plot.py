@@ -1,13 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+
+assert len(sys.argv) == 2
+
+path = sys.argv[1]
 
 XTarget = [[] for _ in range(24)]
 XReal = [[] for _ in range(24)]
 XVel = [[] for _ in range(24)]
 
-print(XTarget)
-
-with open("log.txt") as f:
+with open(path) as f:
   lines = f.readlines()
   assert len(lines) % 3 == 0
 

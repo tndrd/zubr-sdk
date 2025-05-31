@@ -21,5 +21,5 @@ file( GLOB SRCS Src/*)
 add_library(ZubrSDK ${SRCS})
 target_include_directories(ZubrSDK PUBLIC Inc/)
 
-#add_executable(test Src/Test.cpp)
-#target_link_libraries(test PRIVATE BaseSerial CsMessage)
+add_executable(Test Misc/Test.cpp)
+target_link_libraries(Test PRIVATE ZubrSDK)
