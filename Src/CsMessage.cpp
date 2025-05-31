@@ -1,4 +1,4 @@
-#include "CsMessage.h"
+#include "zubr-sdk/CsMessage.h"
 
 namespace Zubr {
 
@@ -8,12 +8,12 @@ namespace Zubr {
 //! \param bits    Количество бит значения
 //!
 void CsMessageOut::addIntN(int val, int bits) {
-  //Начальная часть
+  // Начальная часть
   val &= 0xffffffffu >> (32 - bits);
-  //Добавляем биты в текущий байт
+  // Добавляем биты в текущий байт
   mBuffer[mPtr] |= (val << mUsedBits) | 0x80;
 
-  //Количество битов добавленных выше
+  // Количество битов добавленных выше
   int appendedBits = (bits < 7 ? bits : 7) - mUsedBits;
   val >>= appendedBits;
   bits -= appendedBits;
@@ -24,14 +24,14 @@ void CsMessageOut::addIntN(int val, int bits) {
     mPtr++;
   }
 
-  //Целая часть
+  // Целая часть
   while (bits > 7) {
     mBuffer[mPtr++] = val | 0x80;
     val >>= 7;
     bits -= 7;
   }
 
-  //Заключительная часть
+  // Заключительная часть
   if (bits) {
     mUsedBits = bits;
     mBuffer[mPtr] = (val & (0xff >> (8 - bits))) | 0x80;
@@ -43,13 +43,13 @@ void CsMessageOut::addIntN(int val, int bits) {
 //! \param val 8-битное значение
 //!
 void CsMessageOut::addInt8(int val) {
-  //Добавляем биты в текущий байт
+  // Добавляем биты в текущий байт
   mBuffer[mPtr++] |= (val << mUsedBits) | 0x80;
 
-  //Количество битов добавленных выше
+  // Количество битов добавленных выше
   int bits = 7 - mUsedBits;
 
-  //Количество использованных битов в новом байте
+  // Количество использованных битов в новом байте
   mUsedBits = 8 - bits;
   mBuffer[mPtr] = ((val & 0xff) >> bits) | 0x80;
   if (mUsedBits == 7) {
@@ -64,15 +64,14 @@ void CsMessageOut::addInt8(int val) {
 //! \param val      7-битное значение
 //!
 void CsMessageOut::addInt7(int val) {
-  //Добавляем биты в текущий байт
+  // Добавляем биты в текущий байт
   mBuffer[mPtr++] |= (val << mUsedBits) | 0x80;
 
-  //Количество битов добавленных выше
+  // Количество битов добавленных выше
   int bits = 7 - mUsedBits;
 
-  //Количество использованных битов в новом байте
-  if (bits != 7)
-    mBuffer[mPtr] = ((val & 0x7f) >> bits) | 0x80;
+  // Количество использованных битов в новом байте
+  if (bits != 7) mBuffer[mPtr] = ((val & 0x7f) >> bits) | 0x80;
 }
 
 //!
@@ -107,8 +106,7 @@ void CsMessageOut::addFloat(float val) { addInt32(floatToUInt(val)); }
 //! \param size     Размер блока
 //!
 void CsMessageOut::addBlock(const char *block, int size) {
-  while (size--)
-    addInt8(*block++);
+  while (size--) addInt8(*block++);
 }
 
 //!
@@ -140,7 +138,7 @@ void CsMessageOut::beginAnswer() {
 void CsMessageOut::hostBeginQuery(char cmd) {
   mUsedBits = 0;
   mPtr = 1;
-  mBuffer[0] = ((cmd)&0x7f);
+  mBuffer[0] = ((cmd) & 0x7f);
   mBuffer[1] = 0;
 }
 
@@ -149,7 +147,7 @@ void CsMessageOut::hostBeginQuery(char cmd) {
 //! суммы и символа \n
 //!
 void CsMessageOut::hostEnd() {
-  //Завершаем и КС
+  // Завершаем и КС
   end();
   mBuffer[mPtr++] = '\n';
   mBuffer[mPtr] = 0;
@@ -159,8 +157,7 @@ void CsMessageOut::hostEnd() {
 //! \brief end Завершение формирования команды и дописывание контрольной суммы
 //!
 void CsMessageOut::end() {
-  if (mUsedBits)
-    mPtr++;
+  if (mUsedBits) mPtr++;
   mBuffer[mPtr] = crc(mBuffer, mPtr) | 0x80;
   mBuffer[++mPtr] = 0;
 }
@@ -268,13 +265,11 @@ int CsMessageOut::crc(const char *buf0, int size0, const char *buf1,
 
   unsigned char crc = 0xFF;
 
-  //Вычисляем КС для первой части буфера
-  while (size0--)
-    crc = Crc8Table[crc ^ ((*buf0++) & 0xff)];
+  // Вычисляем КС для первой части буфера
+  while (size0--) crc = Crc8Table[crc ^ ((*buf0++) & 0xff)];
 
-  //Вычисляем КС для второй части буфера
-  while (size1--)
-    crc = Crc8Table[crc ^ ((*buf1++) & 0xff)];
+  // Вычисляем КС для второй части буфера
+  while (size1--) crc = Crc8Table[crc ^ ((*buf1++) & 0xff)];
 
   return crc;
 }
@@ -297,21 +292,21 @@ void CsMessageIn::reset(int start, int ptr) {
 //! \brief getUInt8 Извлекает 8-битное число предполагая, что оно беззнаковое
 //! \return         8-битное число
 //!
-//!Базовая функция извлечения
-//!Сначала получаем младшую половину из одного байта
-//!затем старшую половину - из следующего байта
+//! Базовая функция извлечения
+//! Сначала получаем младшую половину из одного байта
+//! затем старшую половину - из следующего байта
 int CsMessageIn::getUInt8() {
-  //Получаем первую порцию данных
+  // Получаем первую порцию данных
   int val = (at(mPtr++) & 0x7f) >> mUsedBits;
-  //Количество считанных битов
+  // Количество считанных битов
   int bits = 7 - mUsedBits;
-  //Оставшиеся биты
+  // Оставшиеся биты
   val |= ((at(mPtr) & 0x7f) << bits) & 0xff;
-  //Сколько было оставшихся битов (забрали из текущего байта)
+  // Сколько было оставшихся битов (забрали из текущего байта)
   mUsedBits = 8 - bits;
   if (mUsedBits == 7) {
-    //Из текущего байта забрали все
-    //переходим к следующему байту
+    // Из текущего байта забрали все
+    // переходим к следующему байту
     mPtr++;
     mUsedBits = 0;
   }
@@ -323,7 +318,7 @@ int CsMessageIn::getUInt8() {
 //! \return        8-битное число со знаком
 //!
 int CsMessageIn::getInt8() {
-  //Преобразуем беззнаковое 8-битное число к 32-разрядному числу со знаком
+  // Преобразуем беззнаковое 8-битное число к 32-разрядному числу со знаком
   int8_t val = getUInt8();
   // if( val & 0x80 ) val -= 256;
   return val;
@@ -334,12 +329,12 @@ int CsMessageIn::getInt8() {
 //! \return         7-битное число без знака
 //!
 int CsMessageIn::getUInt7() {
-  //Получаем первую порцию данных
+  // Получаем первую порцию данных
   int val = (at(mPtr++) & 0x7f) >> mUsedBits;
-  //Количество считанных битов
+  // Количество считанных битов
   int bits = 7 - mUsedBits;
   if (bits != 7) {
-    //Оставшиеся биты
+    // Оставшиеся биты
     val |= ((at(mPtr) & 0x7f) << bits) & 0x7f;
   }
   return val;
@@ -360,7 +355,7 @@ int CsMessageIn::getUInt16() {
 //! \return         16-битное число со знаком
 //!
 int CsMessageIn::getInt16() {
-  //Преобразуем беззнаковое 8-битное число к 32-разрядному числу со знаком
+  // Преобразуем беззнаковое 8-битное число к 32-разрядному числу со знаком
   int16_t val = getUInt16();
   // if( val & 0x8000 ) val -= 65536;
   return val;
@@ -385,20 +380,20 @@ int CsMessageIn::getInt32() {
 //!
 //! length - длина полного сообщения, включая контрольную сумму
 bool CsMessageIn::checkCrc(int length) const {
-  //Сократить длину до величины тела сообщения (исключаем кс)
+  // Сократить длину до величины тела сообщения (исключаем кс)
   length--;
 
   int size0 = mBufSize - mStart;
   if (size0 >= length) {
-    //Все влезло в первую часть
+    // Все влезло в первую часть
     int crc0 = (CsMessageOut::crc(mBuffer + mStart, length) | 0x80);
     int crc1 = at(length) & 0xff;
     return crc0 == crc1;
   }
-  //Нужно считать по двум частям
+  // Нужно считать по двум частям
   int size1 = length - size0;
   return (CsMessageOut::crc(mBuffer + mStart, size0, mBuffer, size1) | 0x80) ==
          at(length);
 }
 
-} // namespace Zubr
+}  // namespace Zubr

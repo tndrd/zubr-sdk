@@ -1,18 +1,16 @@
 #pragma once
-
 #include <string>
 
 namespace Zubr {
-
 class BaseSerial final {
-private:
+ private:
   struct Descriptor final {
-  private:
+   private:
     int Fd = -1;
 
-  public:
+   public:
     explicit Descriptor(int newFd = -1);
-    
+
     int Get() const;
     bool IsValid() const;
 
@@ -25,7 +23,7 @@ private:
     ~Descriptor();
   };
 
-public:
+ public:
   struct TTYConfig final {
     std::string Port;
     size_t Baudrate;
@@ -37,13 +35,13 @@ public:
     float Timeout;
   };
 
-private:
+ private:
   Descriptor Fd;
   TTYConfig TTY;
 
   void Configure(const TTYConfig &ttyConfig);
 
-public:
+ public:
   BaseSerial(const TTYConfig &config);
 
   BaseSerial(const BaseSerial &) = delete;
@@ -56,4 +54,4 @@ public:
   void Recv(uint8_t *buf, size_t size) const;
 };
 
-} // namespace Zubr
+}  // namespace Zubr
