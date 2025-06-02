@@ -10,10 +10,14 @@ namespace Zubr {
 // message representations
 struct Converter {
  private:
-  static constexpr double QuatNorm = 1 << 14;
-  static constexpr double GyroNorm = 1 << 11;
-  static constexpr double AcclNorm = 1 << 12;
-  static constexpr double ServoNorm = (1 << 14) / (2 * M_PI);
+  struct Constants {
+    static constexpr double QuatNorm = 1 << 14;
+    static constexpr double GyroNorm = 1 << 11;
+    static constexpr double AcclNorm = 1 << 12;
+    static constexpr double ServoNorm = (1 << 14) / (2 * M_PI);
+    static constexpr int32_t RobotVersionBase = 115;
+    static constexpr int32_t RobotSerialBase = 132;
+  };
 
  public:
   using EncodedMsgs = RPC::Messages;
@@ -54,6 +58,16 @@ struct Converter {
       // Array of motor values (angle or speed).
       std::array<double, RPC::Messages::MotorCount> Values;
     };
+
+    // @brief Controller info container
+    struct ControllerInfo {
+      std::string ControllerName;
+      int16_t FwareVersion;
+      int32_t RobotID;
+      int32_t RobotVersion;
+      int32_t RobotSerial;
+      int16_t FlashSize;
+    };
   };
 
  public:
@@ -63,6 +77,7 @@ struct Converter {
     static double QuatComponent(int16_t value);
     static double GyroComponent(int16_t value);
     static double AcclComponent(int16_t value);
+    static std::string ControllerName(RPC::Messages::ContrNameBuf buf);
   };
 
   // @brief Value encoders from domain-specific to protocol representation
@@ -74,13 +89,17 @@ struct Converter {
   };
 
  public:
-  // Decode IMU message from protocol to domain-specific representation
+  // Decode IMU message
   static DecodedMsgs::IMU Decode(const EncodedMsgs::IMU& imu);
 
-  // Decode Servo state message from protocol to domain-specific representation
+  // Decode Servo state message
   static DecodedMsgs::State Decode(const EncodedMsgs::State& state);
 
-  // Encode Servo state message from domain-specific to protocol representation
+  // Decode Controller info message
+  static DecodedMsgs::ControllerInfo Decode(
+      const EncodedMsgs::ControllerInfo& info);
+
+  // Encode Servo state message
   static EncodedMsgs::State Encode(const DecodedMsgs::State& state);
 };
 }  // namespace Zubr

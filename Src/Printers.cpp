@@ -49,5 +49,23 @@ std::ostream& operator<<(std::ostream& os, const RPC::Messages::State& state) {
   return os << Converter::Decode(state);
 }
 
+std::ostream& operator<<(std::ostream& os,
+                         const Converter::DecodedMsgs::ControllerInfo& info) {
+  os << "Controller Info:" << std::endl;
+  os << " - Controller Name:  " << info.ControllerName << std::endl;
+  os << " - Firmware Version: " << info.FwareVersion << std::endl;
+  os << " - Flash Size, MB:   " << info.FlashSize << std::endl;
+  os << " - Robot Type ID:    " << info.RobotID << std::endl;
+  os << " - Robot Version:    " << info.RobotVersion << std::endl;
+  os << " - Robot Serial Num: " << info.RobotSerial << std::endl;
+
+  return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const RPC::Messages::ControllerInfo& info) {
+  return os << Converter::Decode(info);
+}
+
 }  // namespace Printers
 };  // namespace Zubr

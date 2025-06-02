@@ -1,7 +1,7 @@
 #pragma once
 
-#include <tuple>
 #include <stdexcept>
+#include <tuple>
 
 #include "zubr-sdk/ZubrIO.hpp"
 #include "zubr-sdk/roboComBook.h"
@@ -31,6 +31,8 @@ struct RPC {
 
     static constexpr size_t MotorCount = 25;
     using StateVec = std::array<int16_t, MotorCount>;
+
+    using ContrNameBuf = std::array<int8_t, 32>;
 
     struct Param {
       std::tuple<int16_t, int32_t> Data;
@@ -76,14 +78,25 @@ struct RPC {
       GETTER(Quat, 2);
     };
 
+    struct ControllerInfo {
+      std::tuple<ContrNameBuf, int16_t, int32_t, int32_t, int32_t, int16_t>
+          Data;
+      GETTER(ControllerName, 0);
+      GETTER(FwareVersion, 1);
+      GETTER(RobotID, 2);
+      GETTER(RobotVersion, 3);
+      GETTER(RobotSerial, 4);
+      GETTER(FlashSize, 5);
+    };
+
+#undef GETTER
+
     struct BaseTypes {
       template <typename T>
       static void Put(CsMessageOut &, const T &);
       template <typename T>
       static void Get(CsMessageIn &, T &);
     };
-
-#undef GETTER
 
     template <typename Msg>
     static CsMessageOut ToCsMessageOut(const Msg &msg, char cmd) {
@@ -148,6 +161,8 @@ struct RPC {
     PROCEDURE(GetIMU, RB_CB_RL_IMU_GET, RB_CB_RL_IMU, 25, Empty, IMU);
 
     PROCEDURE(StartSlot, RB_CB_SLOT, RB_CB_SLOT_OK, 2, Int8, Empty);
+
+    PROCEDURE(GetControllerInfo, RB_CB_INFO_GET, RB_CB_INFO, 57, Empty, ControllerInfo);
 
 #undef PROCEDURE
   };

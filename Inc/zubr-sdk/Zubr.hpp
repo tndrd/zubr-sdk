@@ -6,13 +6,10 @@
 namespace Zubr {
 class Zubr {
  public:
-  // @typedef Alias for decoded Servo state
   using State = Converter::DecodedMsgs::State;
-
-  // @typedef Alias for decoded IMU frame
   using IMU = Converter::DecodedMsgs::IMU;
+  using ControllerInfo = Converter::DecodedMsgs::ControllerInfo;
 
-  // @typedef Alias for RPC procedures
   using Procedures = RPC::Procedures;
 
  private:
@@ -46,6 +43,10 @@ class Zubr {
   // @brief Start Zubr-controller slot
   // @param Slot ID
   void StartSlot(int8_t slot);
+
+  // @brief Get controller info
+  // @return Controller info
+  ControllerInfo GetControllerInfo();
 
   // @brief Generic interface for extended Zubr remote procedure calls
   template <typename Proc>

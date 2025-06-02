@@ -68,4 +68,14 @@ void RPC::Messages::BaseTypes::Get(CsMessageIn &msg, XYZW &arg) {
   Get(msg, arg.W);
 }
 
+template<>
+void RPC::Messages::BaseTypes::Get(CsMessageIn& msg, ContrNameBuf& arg) {
+  for (int i = 0; i < arg.size(); ++i) Get(msg, arg[i]);
+}
+
+template<>
+void RPC::Messages::BaseTypes::Put(CsMessageOut& msg, const ContrNameBuf& name) {
+    for (const auto &val : name) Put(msg, val);
+}
+
 };  // namespace Zubr

@@ -38,5 +38,10 @@ auto Zubr::GetIMU() -> IMU {
   return Converter::Decode(result);
 }
 
+auto Zubr::GetControllerInfo() -> ControllerInfo {
+  auto result = Call<Procedures::GetControllerInfo>();
+  return Converter::Decode(result);
+}
+
 void Zubr::StartSlot(int8_t slot) { Call<Procedures::StartSlot>({slot}); }
 }  // namespace Zubr
