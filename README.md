@@ -28,10 +28,12 @@ int main() {
   auto imu = zubr.GetIMU();
   auto position = zubr.GetPosition();
   auto velocity = zubr.GetVelocity();
+  auto info = zubr.GetControllerInfo();
 
   std::cout << imu << std::endl;
   std::cout << position << std::endl;
   std::cout << velocity << std::endl;
+  std::cout << info << std::endl;
 
   position.Frame += 1;
 
@@ -74,6 +76,28 @@ Zubr::Zubr zubr ("/dev/ttyACM0");
 ## Getter procedures
 
 ```Zubr``` class incapsulates several read-only calls. Let's look at them
+
+### Controller info obtainment
+
+You can get some controller info by calling ```Zubr::GetControllerInfo```:
+```cpp
+...
+auto info = zubr.GetControllerInfo();
+...
+```
+
+The info structure has a following layout:
+
+```cpp
+struct ControllerInfo {
+  std::string ControllerName;
+  int16_t FwareVersion;
+  int32_t RobotID;
+  int32_t RobotVersion;
+  int32_t RobotSerial;
+  int16_t FlashSize;
+};
+```
 
 ### IMU data obtainment
 
@@ -149,6 +173,7 @@ Assuming you've enabled ```<<``` overloads, library structures are able to be du
 std::cout << imu << std::endl;
 std::cout << position << std::endl;
 std::cout << velocity << std::endl;
+std::cout << info << std::endl;
 ...
 ```
 
