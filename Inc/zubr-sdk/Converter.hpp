@@ -5,6 +5,9 @@
 #include "zubr-sdk/ZubrRPC.hpp"
 
 namespace Zubr {
+
+// @brief A collection of conversions between protocol and domain-specific
+// message representations
 struct Converter {
  private:
   static constexpr double QuatNorm = 1 << 14;
@@ -17,6 +20,7 @@ struct Converter {
 
  public:
   struct DecodedMsgs {
+    // @brief IMU data container
     struct IMU {
       struct XYZ {
         double X;
@@ -31,18 +35,29 @@ struct Converter {
         double W;
       };
 
+      // Orientation quaternion
       XYZW Quat;
+
+      // Angular speed, ?rad/s?
       XYZ Gyro;
+
+      // Acceleration, yet unknown units
       XYZ Accl;
     };
 
+    // @brief Servo data container.
+    // @brief May represent angles or angular speed.
     struct State {
+      // Number of frame which the data corresponds to
       uint8_t Frame;
+
+      // Array of motor values (angle or speed).
       std::array<double, RPC::Messages::MotorCount> Values;
     };
   };
 
  public:
+  // @brief Value decoders from protocol to domain-specific representation
   struct DecodeValue {
     static double ServoAngle(int16_t value);
     static double QuatComponent(int16_t value);
@@ -50,6 +65,7 @@ struct Converter {
     static double AcclComponent(int16_t value);
   };
 
+  // @brief Value encoders from domain-specific to protocol representation
   struct EncodeValue {
     static int16_t ServoAngle(double rad);
     static int16_t QuatComponent(double value);
@@ -58,8 +74,13 @@ struct Converter {
   };
 
  public:
+  // Decode IMU message from protocol to domain-specific representation
   static DecodedMsgs::IMU Decode(const EncodedMsgs::IMU& imu);
+
+  // Decode Servo state message from protocol to domain-specific representation
   static DecodedMsgs::State Decode(const EncodedMsgs::State& state);
+
+  // Encode Servo state message from domain-specific to protocol representation
   static EncodedMsgs::State Encode(const DecodedMsgs::State& state);
 };
 }  // namespace Zubr
