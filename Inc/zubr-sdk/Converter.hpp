@@ -12,7 +12,7 @@ struct Converter {
  private:
   struct Constants {
     static constexpr double QuatNorm = 1 << 14;
-    static constexpr double GyroNorm = 1 << 11;
+    static constexpr double GyroNorm = 1 << 10;
     static constexpr double AcclNorm = 1 << 12;
     static constexpr double ServoNorm = (1 << 14) / (2 * M_PI);
     static constexpr int32_t RobotVersionBase = 115;
