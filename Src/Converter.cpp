@@ -4,6 +4,11 @@ namespace Zubr {
 double Converter::DecodeValue::ServoAngle(int16_t value) {
   return value / Constants::ServoNorm;
 }
+
+double Converter::DecodeValue::ServoSpeed(int16_t value) {
+  return value / Constants::SpeedNorm;
+}
+
 double Converter::DecodeValue::QuatComponent(int16_t value) {
   return value / Constants::QuatNorm;
 }
@@ -55,14 +60,36 @@ auto Converter::Decode(const EncodedMsgs::IMU& imu) -> DecodedMsgs::IMU {
   return decoded;
 }
 
-auto Converter::Decode(const EncodedMsgs::State& state) -> DecodedMsgs::State {
+template <typename Decoder>
+auto Converter::DecodeState(const EncodedMsgs::State& state, Decoder decoder)
+    -> DecodedMsgs::State {
   DecodedMsgs::State decoded;
   decoded.Frame = state.Frame();
 
   for (int i = 0; i < state.Values().size(); ++i)
-    decoded.Values[i] = DecodeValue::ServoAngle(state.Values()[i]);
+    decoded.Values[i] = decoder(state.Values()[i]);
 
   return decoded;
+}
+
+struct AngleDecoder {
+  double operator()(int16_t value) {
+    return Converter::DecodeValue::ServoAngle(value);
+  }
+};
+
+struct SpeedDecoder {
+  double operator()(int16_t value) {
+    return Converter::DecodeValue::ServoSpeed(value);
+  }
+};
+
+auto Converter::Decode(const EncodedMsgs::Angles& angles) -> DecodedMsgs::State {
+  return DecodeState(angles, AngleDecoder{});
+}
+
+auto Converter::Decode(const EncodedMsgs::Speeds& speeds) -> DecodedMsgs::State {
+  return DecodeState(speeds, SpeedDecoder{});
 }
 
 auto Converter::Decode(const EncodedMsgs::ControllerInfo& info)
@@ -80,8 +107,8 @@ auto Converter::Decode(const EncodedMsgs::ControllerInfo& info)
   return decoded;
 }
 
-auto Converter::Encode(const DecodedMsgs::State& state) -> EncodedMsgs::State {
-  EncodedMsgs::State encoded;
+auto Converter::Encode(const DecodedMsgs::State& state) -> EncodedMsgs::Angles {
+  EncodedMsgs::Angles encoded;
   encoded.Frame() = state.Frame;
 
   for (int i = 0; i < state.Values.size(); ++i)

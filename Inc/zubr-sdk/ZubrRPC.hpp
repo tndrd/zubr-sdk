@@ -58,6 +58,9 @@ struct RPC {
       GETTER(Values, 1)
     };
 
+    struct Angles: public State {};
+    struct Speeds: public State {};
+
     struct XYZ {
       int16_t X;
       int16_t Y;
@@ -152,11 +155,11 @@ struct RPC {
     PROCEDURE(UnitParam, RB_CB_UNIT_PARAM, RB_CB_UNIT_PARAM, 13, UnitParam,
               UnitParam);
 
-    PROCEDURE(SetPosition, RB_CB_RL_CONTROL, RB_CB_RL_STATE, 61, State, State);
+    PROCEDURE(SetPosition, RB_CB_RL_CONTROL, RB_CB_RL_STATE, 61, Angles, Angles);
     PROCEDURE(GetPosition, RB_CB_RL_STATE_GET, RB_CB_RL_STATE, 61, Empty,
-              State);
+              Angles);
     PROCEDURE(GetVelocity, RB_CB_RL_VELO_GET, RB_CB_RL_STATE_VELO, 61, Empty,
-              State);
+              Speeds);
 
     PROCEDURE(GetIMU, RB_CB_RL_IMU_GET, RB_CB_RL_IMU, 25, Empty, IMU);
 
