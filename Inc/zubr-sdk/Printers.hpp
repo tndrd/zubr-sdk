@@ -11,10 +11,12 @@ std::ostream& operator<<(std::ostream& os,
 std::ostream& operator<<(std::ostream& os,
                          const Converter::DecodedMsgs::ControllerInfo& info);
 
+/*
 std::ostream& operator<<(std::ostream& os, const RPC::Messages::IMU& imu);
 std::ostream& operator<<(std::ostream& os, const RPC::Messages::State& state);
 std::ostream& operator<<(std::ostream& os,
                          const RPC::Messages::ControllerInfo& info);
+*/
 
 }  // namespace Printers
 };  // namespace Zubr

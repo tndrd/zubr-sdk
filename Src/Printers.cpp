@@ -41,6 +41,7 @@ std::ostream& operator<<(std::ostream& os,
   return os;
 }
 
+/*
 std::ostream& operator<<(std::ostream& os, const RPC::Messages::IMU& imu) {
   return os << Converter::Decode(imu);
 }
@@ -66,6 +67,7 @@ std::ostream& operator<<(std::ostream& os,
                          const RPC::Messages::ControllerInfo& info) {
   return os << Converter::Decode(info);
 }
+*/
 
 }  // namespace Printers
 };  // namespace Zubr
