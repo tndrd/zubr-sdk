@@ -5,7 +5,7 @@ zubr = Zubr("/dev/ttyACM0")
 state = State()
 state.frame = 0
 
-# len(state.values) всегда равен числу моторов (25)
+# len(state.values) is constrained to 25 (motor count)
 for i in range(len(state.values)):
   state.values[i] = 0
 
