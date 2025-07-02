@@ -9,6 +9,9 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
+
+# Install python binding
+sudo cmake --install .
 ```
 
 # Basic Usage
@@ -200,4 +203,48 @@ currPos = zubr.SetPosition(position);
 ...
 ```
 
+# Python binding
 
+Library functions are binded to python using ```pybind11```. Usage is very similar to C++ except some syntax differences:
+
+```py
+from zubrsdk import Zubr, State
+
+zubr = Zubr("/dev/ttyACM0")
+
+state = State()
+state.frame = 0
+
+# len(state.values) is constrained to 25 (motor count)
+for i in range(len(state.values)):
+  state.values[i] = 0
+
+pos = zubr.set_position(state)
+print(pos.frame)
+print(pos.values)
+
+pos = zubr.get_position()
+print(pos.frame)
+print(pos.values)
+
+vel = zubr.get_velocity()
+print(vel.frame)
+print(vel.values)
+
+imu = zubr.get_imu()
+print(imu.quat.x)
+print(imu.quat.y)
+print(imu.quat.z)
+print(imu.quat.w)
+
+print(imu.gyro.x)
+print(imu.gyro.y)
+print(imu.gyro.z)
+
+print(imu.accl.x)
+print(imu.accl.y)
+print(imu.accl.z)
+
+info = zubr.get_controller_info()
+print(info.controller_name)
+```
