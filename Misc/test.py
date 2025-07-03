@@ -1,19 +1,32 @@
-from zubrsdk import Zubr, State
+from zubrsdk import Zubr
 
 zubr = Zubr("/dev/ttyACM0")
 
-state = State()
-state.frame = 0
-
-# len(state.values) is constrained to 25 (motor count)
-for i in range(len(state.values)):
-  state.values[i] = 0
-
-pos = zubr.set_position(state)
+pos = zubr.get_position()
 print(pos.frame)
 print(pos.values)
 
-pos = zubr.get_position()
+# pos.values ARE NOT MODIFIABLE
+# via [] operator (binding speific),
+# following code would not work:
+#
+# for i in range(len(pos.values)):
+#  pos.values[i] = 0.137
+#
+# The pos.values field is to be filled
+# using python list assignment, as in
+# example:
+
+mcount = len(pos.values)
+newpos = [0.0] * mcount
+
+for i in range(len(newpos)):
+  newpos[i] = 0.137
+
+pos.values = newpos
+pos.frame += 1
+
+pos = zubr.set_position(pos)
 print(pos.frame)
 print(pos.values)
 
