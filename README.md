@@ -32,11 +32,14 @@ int main() {
   auto position = zubr.GetPosition();
   auto velocity = zubr.GetVelocity();
   auto info = zubr.GetControllerInfo();
-
+  double batLevel = zubr.GetBatteryLevel();
+  
   std::cout << imu << std::endl;
   std::cout << position << std::endl;
   std::cout << velocity << std::endl;
   std::cout << info << std::endl;
+  std::cout << "Bat level: " << batLevel << std::endl;
+
 
   position.Frame += 1;
 
@@ -166,6 +169,15 @@ struct State {
 > Notice the ```Frame``` field, it is crucial for ```Zubr::SetPosition``` calls.
 
 Servo positions are returned in radians relative to zero positions set by trimming. Servo velocities are returned in radians per second.
+
+### Battery level obtainment
+
+It is possible to get current battery level in volts using ```zubr::GetBatteryLevel``` method
+
+```cpp
+double batLevel = zubr.GetBatteryLevel();
+std::cout << "Bat level: " << batLevel << std::endl;
+```
 
 ## Native print operators
 

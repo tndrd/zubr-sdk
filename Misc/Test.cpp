@@ -1,16 +1,18 @@
-#include "zubr-sdk/Zubr.hpp"
+#include <unistd.h>
+
 #include <cassert>
 #include <iostream>
-#include <unistd.h>
+
+#include "zubr-sdk/Zubr.hpp"
 
 using namespace Zubr::Printers;
 
 int main(int argc, char** argv) try {
-  Zubr::Zubr zubr ("/dev/ttyACM0");
+  Zubr::Zubr zubr("/dev/ttyACM0");
 
   auto pos = zubr.SetPosition({});
   std::cout << pos << std::endl;
-  
+
   pos = zubr.GetPosition();
   std::cout << pos << std::endl;
 
@@ -19,6 +21,9 @@ int main(int argc, char** argv) try {
 
   auto IMU = zubr.GetIMU();
   std::cout << IMU << std::endl;
+
+  double batLevel = zubr.GetBatteryLevel();
+  std::cout << "Bat level: " << batLevel << std::endl;
 
   return 0;
 } catch (std::exception& e) {

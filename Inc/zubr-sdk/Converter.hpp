@@ -14,6 +14,11 @@ struct Converter {
     static constexpr double QuatNorm = 1 << 14;
     static constexpr double GyroNorm = 1 << 10;
     static constexpr double AcclNorm = 1 << 12;
+
+    // Coefficient provided by A. Sibilev,
+    // static constexpr double BattNorm = 2702. / 10.0;
+    static constexpr double BattNorm = 3812. / 12.2;
+
     static constexpr double ServoNorm = (1 << 14) / (2 * M_PI);
     static constexpr int32_t RobotVersionBase = 115;
     static constexpr int32_t RobotSerialBase = 132;
@@ -91,6 +96,7 @@ struct Converter {
     static double GyroComponent(int16_t value);
     static double AcclComponent(int16_t value);
     static std::string ControllerName(RPC::Messages::ContrNameBuf buf);
+    static double BatteryLevel(int32_t value);
   };
 
   // @brief Value encoders from domain-specific to protocol representation

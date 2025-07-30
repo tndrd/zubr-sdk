@@ -1,5 +1,7 @@
 #include "zubr-sdk/Converter.hpp"
 
+#include <iostream>
+
 namespace Zubr {
 double Converter::DecodeValue::ServoAngle(int16_t value) {
   return value / Constants::ServoNorm;
@@ -17,6 +19,10 @@ double Converter::DecodeValue::GyroComponent(int16_t value) {
 }
 double Converter::DecodeValue::AcclComponent(int16_t value) {
   return value / Constants::AcclNorm;
+}
+double Converter::DecodeValue::BatteryLevel(int32_t value) {
+  std::cout << value << std::endl;
+  return value / Constants::BattNorm;
 }
 
 std::string Converter::DecodeValue::ControllerName(
@@ -84,11 +90,13 @@ struct SpeedDecoder {
   }
 };
 
-auto Converter::Decode(const EncodedMsgs::Angles& angles) -> DecodedMsgs::State {
+auto Converter::Decode(const EncodedMsgs::Angles& angles)
+    -> DecodedMsgs::State {
   return DecodeState(angles, AngleDecoder{});
 }
 
-auto Converter::Decode(const EncodedMsgs::Speeds& speeds) -> DecodedMsgs::State {
+auto Converter::Decode(const EncodedMsgs::Speeds& speeds)
+    -> DecodedMsgs::State {
   return DecodeState(speeds, SpeedDecoder{});
 }
 
