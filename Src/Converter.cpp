@@ -21,8 +21,7 @@ double Converter::DecodeValue::AcclComponent(int16_t value) {
   return value / Constants::AcclNorm;
 }
 double Converter::DecodeValue::BatteryLevel(int32_t value) {
-  std::cout << value << std::endl;
-  return value / Constants::BattNorm;
+  return (value - Constants::BattBias) / Constants::BattSlope;
 }
 
 std::string Converter::DecodeValue::ControllerName(

@@ -17,7 +17,10 @@ struct Converter {
 
     // Coefficient provided by A. Sibilev,
     // static constexpr double BattNorm = 2702. / 10.0;
-    static constexpr double BattNorm = 3812. / 12.2;
+    
+    // See Misc/ADCCalib.ipynb
+    static constexpr double BattSlope = 327.5;
+    static constexpr double BattBias  = -150.3;
 
     static constexpr double ServoNorm = (1 << 14) / (2 * M_PI);
     static constexpr int32_t RobotVersionBase = 115;

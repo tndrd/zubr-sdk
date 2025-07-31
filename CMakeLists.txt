@@ -26,3 +26,7 @@ install(TARGETS zubrsdk DESTINATION ${PYTHON3_SITEDIR})
 # Building test script
 add_executable(Test Misc/Test.cpp)
 target_link_libraries(Test PRIVATE ZubrSDK)
+
+# Building test script
+add_executable(ADCCalib Misc/ADCCalib.cpp)
+target_link_libraries(ADCCalib PRIVATE ZubrSDK)
