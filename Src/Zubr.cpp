@@ -45,14 +45,17 @@ auto Zubr::GetControllerInfo() -> ControllerInfo {
 
 void Zubr::StartSlot(int8_t slot) { Call<Procedures::StartSlot>({slot}); }
 
-double Zubr::GetBatteryLevel() {
+int32_t Zubr::GetBatteryADC() {
   // The only hardcoded index we are using now
   // No need to move it to header IMO, as user
   // wouldn't ever need it
   static constexpr int16_t BatteryLevelParamIndex = 2;
 
-  auto param = Call<Procedures::GetZubrParam>(BatteryLevelParamIndex);
-  return Converter::DecodeValue::BatteryLevel(param.Value());
+  return Call<Procedures::GetZubrParam>(BatteryLevelParamIndex).Value();
+}
+
+double Zubr::GetBatteryLevel() {
+  return Converter::DecodeValue::BatteryLevel(GetBatteryADC());
 }
 
 }  // namespace Zubr

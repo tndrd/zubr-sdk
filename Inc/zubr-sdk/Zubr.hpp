@@ -44,6 +44,10 @@ class Zubr {
   // @param Slot ID
   void StartSlot(int8_t slot);
 
+  // @brief Get current battery ADC value
+  // @return Battery ADC value
+  int32_t GetBatteryADC();
+
   // @brief Get current battery level
   // @return Battery level in volts
   double GetBatteryLevel();
