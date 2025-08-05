@@ -179,6 +179,9 @@ double batLevel = zubr.GetBatteryLevel();
 std::cout << "Bat level: " << batLevel << std::endl;
 ```
 
+> This method obtains battery ADC value and converts it to volts using
+default conversion parameters. Unfortunately, those may significantly vary on different robots. If you are not satisfied with an  accuracy of the latter method, you may recalibrate ADC conversion. Follow ```ADCCalib.cpp``` and ```ADCCalib.ipynb``` as examples of such calibration.
+
 ## Native print operators
 
 Assuming you've enabled ```<<``` overloads, library structures are able to be dumped in any ```std::ostream```:
