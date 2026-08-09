@@ -1,6 +1,19 @@
 # Zubr-SDK
 
-C++ library to communicate with "Zubr" servo controller via USB
+Host-side C++/Python library for the **Zubr** servo controller of a humanoid
+robot. The controller drives up to 25 servos and speaks a low-level binary
+protocol over USB-CDC, where each field has to be packed into the message by hand
+in the right order. This SDK wraps that protocol in a typed RPC layer, so the user
+works with plain structures (positions, velocities, IMU, battery) instead of raw
+byte packing.
+
+It was written when the project needed lower control latency and group commands
+addressing all servos at once, which the stock protocol did not provide. The whole
+API is also exposed to Python via pybind11 for use from high-level control code.
+
+**Stack:** C++17 · USB-CDC (serial) · pybind11 · Python · CMake
+
+---
 
 # How to build
 
@@ -24,8 +37,6 @@ sudo cmake --install .
 using namespace Zubr::Printers;
 
 int main() {
-  // Dynamic port configuration is
-  // yet to be implemented
   Zubr::Zubr zubr ("/dev/ttyACM0");
 
   auto imu = zubr.GetIMU();
@@ -232,7 +243,7 @@ print(pos.frame)
 print(pos.values)
 
 # pos.values ARE NOT MODIFIABLE
-# via [] operator (binding speific),
+# via [] operator (binding speсific),
 # following code would not work:
 #
 # for i in range(len(pos.values)):
